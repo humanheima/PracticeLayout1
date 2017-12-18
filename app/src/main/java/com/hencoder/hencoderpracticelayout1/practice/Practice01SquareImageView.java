@@ -1,24 +1,32 @@
 package com.hencoder.hencoderpracticelayout1.practice;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 /**
  * 需要把它写成正方形的 ImageView
  */
 public class Practice01SquareImageView extends ImageView {
+
+    private static final String TAG = "Practice01SquareImageVi";
+    private Paint paint = new Paint();
+
     public Practice01SquareImageView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public Practice01SquareImageView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public Practice01SquareImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        paint.setTextSize(48);
     }
 
     /**
@@ -27,11 +35,24 @@ public class Practice01SquareImageView extends ImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        Log.e(TAG, "width=" + width + ",height=" + height);
         // 先用 getMeasuredWidth() 和 getMeasuredHeight() 取到 super.onMeasure() 的计算结果
-
+        if (width > height) {
+            setMeasuredDimension(height, height);
+        } else {
+            setMeasuredDimension(width, width);
+        }
         // 然后通过计算，让宽度和高度一致
 
         // 再用 setMeasuredDimension(width, height) 来保存最终的宽度和高度
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.concat(getImageMatrix());
+        canvas.drawText(getMeasuredWidth() + "x" + getMeasuredHeight(), 0, paint.getTextSize(), paint);
     }
 }
